@@ -1,0 +1,32 @@
+Language	Native speakers (in millions)	Language family	Branch  Scripts
+Mandarin Chinese	941	Sino-Tibetan	Sinitic	官话
+Spanish	486	Indo-European	Romance	español
+English	380	Indo-European	Germanic	English
+Hindi	345	Indo-European	Indo-Aryan	हिन्दी
+Bengali	237	Indo-European	Indo-Aryan	বাংলা
+Portuguese	236	Indo-European	Romance	Português
+Russian	148	Indo-European	Balto-Slavic	Русский язык
+Japanese	123	Japonic	Japanese	日本語
+Yue Chinese	86	Sino-Tibetan	Sinitic	粵語
+Vietnamese	85	Austroasiatic	Vietic	Tiếng Việt
+Turkish	84	Turkic	Oghuz	Türkçe
+Wu Chinese	83	Sino-Tibetan	Sinitic	吳語
+Marathi	83	Indo-European	Indo-Aryan	मराठी
+Telugu	83	Dravidian	South-Central	తెలుగు
+Western Punjabi	82	Indo-European	Indo-Aryan	ਪੰਜਾਬੀ 
+Western Punjabi	82	Indo-European	Indo-Aryan	پنجابی
+Korean	81	Koreanic	—	한국어
+Korean	81	Koreanic	—	조선말
+Tamil	79	Dravidian	South	தமிழ்
+Egyptian Arabic	78	Afroasiatic	Semitic	عربى
+Standard German	76	Indo-European	Germanic	Deutsch
+French	74	Indo-European	Romance	français
+Urdu	70	Indo-European	Indo-Aryan	اُردُو
+Javanese	68	Austronesian	Malayo-Polynesian	ꦧꦱꦗꦮ
+Italian	64	Indo-European	Romance	italiano
+Iranian Persian	62	Indo-European	Iranian	فارسی
+Gujarati	58	Indo-European	Indo-Aryan	ગુજરાતી
+Hausa	54	Afroasiatic	Chadic	هَرْشَن هَوْسَ
+Bhojpuri	53	Indo-European	Indo-Aryan	भोजपुरी
+Levantine Arabic	51	Afroasiatic	Semitic	ns
+Southern Min	51	Sino-Tibetan	Sinitic	閩南語
