@@ -7,7 +7,7 @@
     <style>
         #word-cloud {
             width: 100%;
-            height: 500px;
+            height: 1000px;
             border: 1px solid black;
             position: relative;
             overflow: hidden;
@@ -39,7 +39,7 @@
             padding: 15px;
             border-radius: 8px;
             z-index: 1000;
-            width: 200px;
+            width: 250px;
         }
 
         .card a {
@@ -57,6 +57,10 @@
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 12px;
+        }
+
+        .card .details {
+            margin-bottom: 10px;
         }
 
         /* 覆盖整个页面以关闭卡片的透明背景 */
@@ -78,21 +82,41 @@
 <div id="overlay"></div>
 
 <script>
-    const words = [
-        ['官话', 941, [
-            { text: '百度', link: 'https://www.baidu.com' },
-            { text: 'Google', link: 'https://www.google.com' }
-        ]],
-        ['español', 486, [
-            { text: 'YouTube', link: 'https://www.youtube.com' },
-            { text: 'Wikipedia', link: 'https://es.wikipedia.org' }
-        ]],
-        ['English', 380, [
-            { text: 'BBC', link: 'https://www.bbc.com' },
-            { text: 'CNN', link: 'https://www.cnn.com' }
-        ]],
-        // 你可以继续添加其他单词及其对应的链接...
-    ];
+    // 从 CSV 文件加载数据
+    fetch('./image/00 nav/01 lang.csv')
+        .then(response => response.text())
+        .then(csvText => {
+            const words = parseCSVData(csvText);
+            createWordCloud(words);
+        })
+        .catch(error => console.error('Error loading CSV:', error));
+
+    // 解析 CSV 文件内容
+    function parseCSVData(csvText) {
+        const lines = csvText.trim().split('\n');
+        const headers = lines[0].split(',');
+        const data = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',');
+            const language = cols[0];
+            const nativeSpeakers = parseInt(cols[2]) || 0; // 使用人数作为权重
+            const family = cols[3];
+            const script = cols[4];
+            const omniglotLink = cols[5];
+            const wikipediaLink = cols[7];
+
+            const links = [
+                { text: 'Omniglot', link: omniglotLink },
+                { text: 'Wikipedia', link: wikipediaLink }
+            ];
+
+            // 将所有需要的信息推入数组
+            data.push({ language, nativeSpeakers, family, script, links });
+        }
+
+        return data;
+    }
 
     // 随机生成颜色的函数
     function getRandomColor() {
@@ -108,45 +132,66 @@
         const cloudContainer = document.getElementById('word-cloud');
         cloudContainer.innerHTML = '';  // 清空之前的内容
 
-        words.forEach(([word, weight, links], index) => {
+        // 找到总人口数范围，方便缩放
+        const minSpeakers = Math.min(...words.map(word => word.nativeSpeakers));
+        const maxSpeakers = Math.max(...words.map(word => word.nativeSpeakers));
+
+        words.forEach(wordData => {
             const wordElement = document.createElement('div');
             wordElement.classList.add('word');
-            wordElement.style.fontSize = `${weight / 10}px`;  // 根据词频调整字体大小
+
+            // 使用人数来动态调整字体大小，将人口数缩放到合适范围
+            const scaleFactor = 100;  // 控制字体大小的因子，调节视觉效果
+            const fontSize = ((wordData.nativeSpeakers - minSpeakers) / (maxSpeakers - minSpeakers)) * scaleFactor + 50;
+            wordElement.style.fontSize = `${fontSize}px`;
+
             wordElement.style.color = getRandomColor();  // 随机颜色
-            wordElement.style.top = `${Math.random() * 80}%`;  // 随机设置垂直位置
-            wordElement.style.left = `-10%`;  // 初始位置在左侧之外
-            wordElement.textContent = word;
+            wordElement.style.top = `${Math.random() * 90}%`;  // 随机设置垂直位置
+            wordElement.style.left = `-30%`;  // 初始位置在左侧之外
+            wordElement.textContent = wordData.script;
 
             // 设置动画持续时间和延迟以创建动态效果
-            wordElement.style.animationDuration = `${Math.random() * 10 + 10}s`;  // 10 到 20 秒之间
-            wordElement.style.animationDelay = `${Math.random() * 5}s`;  // 随机延迟
+            wordElement.style.animationDuration = `${Math.random() * 30 + 20}s`;  // 20 到 50 秒之间
+            wordElement.style.animationDelay = `${Math.random() * 10}s`;  // 随机延迟
 
             wordElement.addEventListener('click', function(event) {
-                showCard(event, word, links);
+                showCard(event, wordData);
             });
 
             cloudContainer.appendChild(wordElement);
         });
     }
 
-    function showCard(event, word, links) {
+    function showCard(event, wordData) {
         // 创建卡片元素
         const card = document.createElement('div');
         card.classList.add('card');
 
-        // 显示词语标题
+        // 显示词语标题（语言名称）
         const wordTitle = document.createElement('div');
         wordTitle.classList.add('word-title');
-        wordTitle.textContent = word;
+        wordTitle.textContent = wordData.language;
         card.appendChild(wordTitle);
 
+        // 添加语言信息（Script和Native Speakers）
+        const details = document.createElement('div');
+        details.classList.add('details');
+        details.innerHTML = `
+            <p><strong>Family:</strong> ${wordData.family}</p>
+            <p><strong>Script:</strong> ${wordData.script}</p>
+            <p><strong>Native Speakers:</strong> ${wordData.nativeSpeakers.toLocaleString()}</p>
+        `;
+        card.appendChild(details);
+
         // 添加链接到卡片中
-        links.forEach(link => {
-            const linkElement = document.createElement('a');
-            linkElement.href = link.link;
-            linkElement.textContent = link.text;
-            linkElement.target = "_blank";  // 在新标签页打开
-            card.appendChild(linkElement);
+        wordData.links.forEach(link => {
+            if (link.link) {
+                const linkElement = document.createElement('a');
+                linkElement.href = link.link;
+                linkElement.textContent = link.text;
+                linkElement.target = "_blank";  // 在新标签页打开
+                card.appendChild(linkElement);
+            }
         });
 
         // 设置卡片的位置
@@ -166,9 +211,6 @@
             overlay.style.display = 'none';  // 隐藏覆盖层
         });
     }
-
-    // 生成词云
-    createWordCloud(words);
 </script>
 
 </body>
